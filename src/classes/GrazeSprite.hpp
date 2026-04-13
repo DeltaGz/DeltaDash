@@ -1,7 +1,8 @@
 #pragma once
 #include <Geode/Geode.hpp>
 #include <Geode/binding/SimplePlayer.hpp>
-#include <hiimjustin000.more_icons/include/MoreIconsV2.hpp>
+#define MORE_ICONS_EVENTS
+#include <hiimjustin000.more_icons/include/MoreIcons.hpp>
 
 using namespace geode::prelude;
 

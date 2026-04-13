@@ -109,7 +109,22 @@ class $modify(StupidPlayerObject, PlayerObject) {
             }
         }
 
-        if (m_ghostTrail) m_ghostTrail->m_iconSprite = fields->p_soulSpr;
+        if (m_ghostTrail) {
+            m_ghostTrail->m_iconSprite = fields->p_soulSpr;
+            m_ghostTrail->m_color = getColorToUse();
+
+            if (!mod->getSettingValue<bool>("soulmode-keepat0rot")) {
+                if (m_isSwing) {
+                    m_ghostTrail->m_iconSprite->setRotation(-90);
+                } else {
+                    m_ghostTrail->m_iconSprite->setRotation(0);
+                    m_ghostTrail->m_iconSprite->setFlipY(m_isUpsideDown);
+                }
+            } else {
+                m_ghostTrail->m_iconSprite->setRotation(0);
+                m_ghostTrail->m_iconSprite->setFlipY(false);
+            }
+        } 
         
         auto grazeSprite = static_cast<GrazeSprite*>(this->getUserObject("graze-sprite-handler"_spr));
         if (grazeSprite && grazeSprite->getGrazeSprite()) {

@@ -42,7 +42,7 @@ bool TPBar::init() {
     m_barBg->setZOrder(1);
     
     setContentSize(m_barTop->getContentSize());
-    setAnchorPoint({0.5f, 0.5f});
+    setAnchorPoint({0.f, 0.5f});
     
     // adding
     addChild(m_barBg);
@@ -78,7 +78,8 @@ bool TPBar::init() {
     m_fillerLine->setAnchorPoint({0.5f, 1.f});
     m_fillerLine->setPosition({nodeSize.width / 2.f, 1.f});
     
-    setScale(1.5f);
+    //setScale(1.5f);
+    setScale(Mod::get()->getSettingValue<float>("tp-ui-scale"));
     setID("tp-bar-container"_spr);
     
     return true;
@@ -124,11 +125,12 @@ void TPBar::reset() {
 
 void TPBar::animateEntry(float delay) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
-    setPosition({-10.f, winSize.height / 2.f});
-    
+    float uiScale = Mod::get()->getSettingValue<float>("tp-ui-scale");
+
+    setPosition({-20.f * uiScale, winSize.height / 2.f});
     auto moveInBar = CCSequence::create(
         CCDelayTime::create(delay),
-        CCEaseOut::create(CCMoveTo::create(0.3f, {45.f, winSize.height / 2.f}), 3.f),
+        CCEaseOut::create(CCMoveTo::create(0.3f, {30.f * uiScale, winSize.height / 2.f}), 3.f),
         nullptr
     );
     
@@ -137,10 +139,11 @@ void TPBar::animateEntry(float delay) {
 
 void TPBar::animateExit(float delay) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
+    float uiScale = Mod::get()->getSettingValue<float>("tp-ui-scale");
     
     auto moveOutBar = CCSequence::create(
         CCDelayTime::create(delay),
-        CCEaseIn::create(CCMoveTo::create(0.25f, {-10.f, winSize.height / 2.f}), 3.f),
+        CCEaseIn::create(CCMoveTo::create(0.25f, {-20.f * uiScale, winSize.height / 2.f}), 3.f),
         nullptr
     );
     

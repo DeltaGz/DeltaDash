@@ -2,18 +2,15 @@
 #include <Geode/modify/PlayerObject.hpp>
 #include <Geode/modify/EndLevelLayer.hpp>
 #include <Geode/modify/GJGarageLayer.hpp>
-#include <geode.custom-keybinds/include/Keybinds.hpp>
+#include <Geode/loader/GameEvent.hpp>
+#include <Geode/loader/SettingV3.hpp>
 #include <random>
 #include "classes/BattleTab.hpp"
 #include "classes/TPBar.hpp"
 
 using namespace geode::prelude;
-#ifndef GEODE_IS_IOS
-using namespace keybinds;
-#endif
 
 bool enableDeltarune = Mod::get()->getSettingValue<bool>("enable-deltarune");
-
 bool hpCooldown = false;
 
 ccColor3B getPastelCol(const ccColor3B& color, float factor = 0.4f) {
@@ -156,7 +153,7 @@ float getRandomHPFloat(float min, float max) {
 }
 
 $on_mod(Loaded){
-    #ifndef GEODE_IS_IOS
+    /*
     BindManager::get()->registerBindable({
         "heal-prayer-key"_spr,
         "Heal keybind",
@@ -180,9 +177,9 @@ $on_mod(Loaded){
         { Keybind::create(KEY_Q, Modifier::None) },
         Mod::get()->getName()
     });
-    #endif
+    */
 
-    listenForSettingChanges("enable-deltarune", [](bool value) {
+    listenForSettingChanges<bool>("enable-deltarune", [](bool value) {
         enableDeltarune = value;
     });
 }
@@ -246,9 +243,10 @@ class $modify(DeltaPlayLayer, PlayLayer) {
         if (fields->tpBar) {
             m_uiLayer->addChild(fields->tpBar);
             fields->tpBar->setZOrder(20);
+            //fields->tpBar->setScale(Mod::get()->getSettingValue<float>("tp-ui-scale"));
             //log::info("created TP bar");
         } else {
-            log::error("couldn't create tp bar");
+            log::error("couldn't create tp bar?????????????????????????????????????????????????????????????");
         }
         
         // party container
@@ -256,7 +254,7 @@ class $modify(DeltaPlayLayer, PlayLayer) {
         fields->partyContainer->setID("party-container"_spr);
         fields->partyContainer->setContentSize({400.f, 100.f});
         fields->partyContainer->setAnchorPoint({0.5f, 0.f});
-        fields->partyContainer->setScale(Mod::get()->getSettingValue<double>("ui-scale"));
+        fields->partyContainer->setScale(Mod::get()->getSettingValue<double>("party-ui-scale"));
         fields->partyContainer->setPosition({winSize.width / 2.f, 0.f});
         
         m_uiLayer->addChild(fields->partyContainer);
@@ -316,9 +314,7 @@ class $modify(DeltaPlayLayer, PlayLayer) {
 
         setupIndicators();
         setupButtonCallbacks();
-        #ifndef GEODE_IS_IOS
         setupKeybinds();
-        #endif
         
         std::string activationMode = Mod::get()->getSettingValue<std::string>("activation-mode");
         
@@ -328,7 +324,7 @@ class $modify(DeltaPlayLayer, PlayLayer) {
             
             if (fields->tpBar) fields->tpBar->animateEntry(0.25f);
         } else {
-            if (fields->tpBar) fields->tpBar->setPosition({-10.f, winSize.height / 2.f});
+            if (fields->tpBar) fields->tpBar->setPosition({-20.f * Mod::get()->getSettingValue<float>("tp-ui-scale"), winSize.height / 2.f});
         }
     }
 
@@ -494,7 +490,13 @@ class $modify(DeltaPlayLayer, PlayLayer) {
             this->scheduleOnce(schedule_selector(DeltaPlayLayer::cooldownHPFunction), 1.6f);
             
             auto flashAction = createInvincibilityFlash();
-            player->runAction(flashAction);
+            auto soulSpr = static_cast<CCSprite*>(player->getChildByID("soul-sprite"_spr));
+
+            if (Mod::get()->getSettingValue<bool>("enable-soul") && soulSpr) {
+                soulSpr->runAction(flashAction);
+            } else {
+                player->runAction(flashAction);
+            }
             
             FMODAudioEngine::sharedEngine()->playEffect("snd_hurt.ogg"_spr);
             
@@ -1154,30 +1156,35 @@ class $modify(DeltaPlayLayer, PlayLayer) {
         }
     }
     
-    #ifndef GEODE_IS_IOS
     void setupKeybinds() {
-        this->addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-            if (event->isDown()) {
-                healPrayerKeybindVer();
-            }
-            return ListenerResult::Propagate;
-        }, "heal-prayer-key"_spr);
-        
-        this->addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-            if (event->isDown()) {
-                playerDefendKeybindVer();
-            }
-            return ListenerResult::Propagate;
-        }, "defend-key"_spr);
 
-        this->addEventListener<InvokeBindFilter>([this](InvokeBindEvent* event) {
-            if (event->isDown()) {
-                activateBattleModeKeybind();
+        this->addEventListener(
+            KeybindSettingPressedEventV3(Mod::get(), "activation-keybind"),
+            [this](Keybind const& keybind, bool down, bool repeat, double timestamp) {
+                if (down && !repeat) {
+                    activateBattleModeKeybind();
+                }
             }
-            return ListenerResult::Propagate;
-        }, "activate-midgame"_spr);
+        );
+
+        this->addEventListener(
+            KeybindSettingPressedEventV3(Mod::get(), "heal-keybind"),
+            [this](Keybind const& keybind, bool down, bool repeat, double timestamp) {
+                if (down && !repeat) {
+                    healPrayerKeybindVer();
+                }
+            }
+        );
+
+        this->addEventListener(
+            KeybindSettingPressedEventV3(Mod::get(), "defend-keybind"),
+            [this](Keybind const& keybind, bool down, bool repeat, double timestamp) {
+                if (down && !repeat) {
+                    playerDefendKeybindVer();
+                }
+            }
+        );
     }
-    #endif
     
     void showDamageIndicator(PlayerObject* player, float damage) {
         auto fields = m_fields.self();

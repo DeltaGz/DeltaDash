@@ -1,10 +1,10 @@
 {
-	"geode": "4.10.0",
+	"geode": "5.6.1",
 	"gd": {
-		"win": "2.2074",
-		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
+		"win": "2.2081",
+		"android": "2.2081",
+		"mac": "2.2081",
+		"ios": "2.2081"
 	},
 	"settings": {
 		"enable-deltarune": {
@@ -41,6 +41,40 @@
 			"default": "ralsei",
 			"one-of": ["kris", "susie", "ralsei", "noelle", "player", "none"]
 		},
+		"keyind-title": {
+			"type": "title",
+			"name": "Keybinds",
+			"description": "Configure the mod's main keybinds used in gameplay features."
+		},
+		"activation-keybind": {
+			"type": "keybind",
+			"name": "Mid-Game Activation",
+			"description": "The keybind used to toggle the mod's effects mid-gameplay",
+			"category": "gameplay",
+			"default": "Q",
+			"migrate-from": "saritahhh.deltadash/activate-midgame"
+		},
+		"heal-keybind": {
+			"type": "keybind",
+			"name": "Heal Action",
+			"description": "The keybind used to Heal as a party member mid-game.",
+			"category": "gameplay",
+			"default": "C",
+			"migrate-from": "saritahhh.deltadash/heal-prayer-key"
+		},
+		"defend-keybind": {
+			"type": "keybind",
+			"name": "Defend Action",
+			"description": "The keybind used to Defend as a party member in-game.",
+			"category": "gameplay",
+			"default": "V",
+			"migrate-from": "saritahhh.deltadash/defend-key"
+		},
+		"soul-title": {
+			"type": "title",
+			"name": "Soul Mode Settings",
+			"description": "Settings for the mod's 'Soul Mode' visual feature."
+		},
 		"enable-soul": {
 			"type": "bool",
 			"name": "Soul Mode",
@@ -74,13 +108,21 @@
 			"name": "Miscellaneous",
 			"description": "Misc settings for the mod."
 		},
-		"ui-scale": {
+		"party-ui-scale": {
 			"type": "float",
 			"name": "UI Scale - Party UI",
-			"description": "Controls the scale of the Party Members UI elements at the bottom of the screen.",
+			"description": "Controls the scale of the Party Members UI elements located at the bottom of the screen.",
 			"default": 1.0,
-			"min": 0.1,
+			"min": 0.2,
 			"max": 1.0
+		},
+		"tp-ui-scale": {
+			"type": "float",
+			"name": "UI Scale - TP Bar",
+			"description": "Controls the scale of the TP Bar UI element located at the left side of the screen.",
+			"default": 1.5,
+			"min": 0.2,
+			"max": 2.0
 		},
 		"graze-scale": {
 			"type": "float",
@@ -95,6 +137,19 @@
 			"name": "Damage/Down/Heal indicators - Always Imitate Deltarune X Position",
 			"description": "Always positions the damage, downed and healing indicators to the left side of the screen, like on Deltarune's battle screen, instead of trying to fetch the Player's screen pos.",
 			"default": false
+		},
+		"enable-songlabel": {
+			"type": "bool",
+			"name": "Enable Song Label at level start",
+			"description": "Enables showing a label with the name of the currently playing song, similar to the one text that shows up ONCE in Deltarune chapter 1, showing 'Field of Hopes and Dreams'\n\nThis does not depend on the mod's soft-toggle, so u can disable the rest of the features and keep this enabled!",
+			"default": true
+		},
+		"songlabel-showartist": {
+			"type": "bool",
+			"name": "Song Label - Show Artist Name",
+			"description": "Shows the Artist's name in the Song label, like: 'Artist - Song Name' instead of only showing the Song's name.",
+			"default": false,
+			"enable-if": "enable-songlabel"
 		}
 	},
 	"resources": {
@@ -115,7 +170,7 @@
 	},
 	"id": "saritahhh.deltadash",
 	"name": "DeltaDash",
-	"version": "v1.0.0",
+	"version": "v1.1.0",
 	"developers": ["Saritahhh", "Erymanthus"],
 	"description": "Bring Deltarune aspects to GD!",
 	"tags": ["gameplay", "interface", "cheat", "customization"],
@@ -126,15 +181,11 @@
 		"geode.node-ids": ">=v1.20.0",
 		"prevter.imageplus": {
 			"version": ">=v1.0.1",
-			"importance": "required"
-		},
-		"geode.custom-keybinds": {
-			"importance": "required",
-			"version": ">=1.10.0"
+			"required": true
 		},
 		"hiimjustin000.more_icons": {
-            "version": ">=v1.16.0",
-            "importance": "required"
+            "version": ">=v2.1.0",
+			"required": false
         }
 	}
 }

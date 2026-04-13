@@ -20,7 +20,7 @@ void SarahsTweaks::cooldownTP(float dt) {
 }
 
 $on_mod(Loaded) {
-    listenForSettingChanges("enable-deltarune", [](bool value) {
+    listenForSettingChanges<bool>("enable-deltarune", [](bool value) {
         enableDeltaruneMod = value;
     });
 }
