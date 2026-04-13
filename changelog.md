@@ -1,5 +1,6 @@
 # 1.1.0
 - Ported to Geode v5 (GD 2.2081)
+- New Logo! :3
 - Added **Song Label** feature! Replicates Deltarune's Chapter 1 "Now Playing" label shown in the Field of Hopes and Dreams.
 - Tweaked and properly finished the TP Bar UI Scaling setting.
 - Updated to new Keybind system.
