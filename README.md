@@ -1,6 +1,7 @@
 <img src="resources/deltadash_header.png" height="150" alt="DELTADASH Mod Header"/>
 
 Bring Deltarune's Battle System to Geometry Dash!
+
 ![Mod Version](https://api.geode-sdk.org/v1/mods/saritahhh.deltadash/status_badge?stat=version)
 ![Downloads](https://api.geode-sdk.org/v1/mods/saritahhh.deltadash/status_badge?stat=downloads)
 ![GD Version](https://api.geode-sdk.org/v1/mods/saritahhh.deltadash/status_badge?stat=gd_version)
