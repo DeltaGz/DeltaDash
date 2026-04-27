@@ -1,3 +1,6 @@
+# 1.2
+- Custom mode!
+
 # 1.1.0
 - Ported to Geode v5 (GD 2.2081)
 - New Logo! :3
