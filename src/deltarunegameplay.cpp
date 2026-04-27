@@ -139,10 +139,18 @@ CharacterAttributes getCharAttributes(int stars, int isDemon, std::string charac
         auto playerColor = gm->colorForIdx(gm->getPlayerColor());
         attrs.tabContainerColor = playerColor;
         attrs.tabElementsColor = playerColor;
-        attrs.maxHealth = 1.f;
-    }
+		attrs.maxHealth = 1.f;
+}
 
-    return attrs;
+// === CUSTOM HP OVERRIDE ===
+bool useCustomHP = Mod::get()->getSettingValue<bool>("custom-hp-toggle");
+
+if (useCustomHP) {
+    int customHP = Mod::get()->getSettingValue<int>("custom-hp");
+    attrs.maxHealth = static_cast<float>(customHP);
+}
+
+return attrs;
 }
 
 float getRandomHPFloat(float min, float max) {
